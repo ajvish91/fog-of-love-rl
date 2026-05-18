@@ -71,6 +71,8 @@ The **`AgileRL/`** directory is an in-tree fork of [AgileRL](https://github.com/
 
 If this code helps your work, cite your eventual paper or preprint when it exists, and cite **AgileRL** per [their project](https://github.com/AgileRL/AgileRL). Update **`CITATION.cff`** when author list and repo URL are final.
 
+Background on **ABRL**: Vishwanath & Omlin (2024), [*Exploring Affinity-Based Reinforcement Learning for Designing Artificial Virtuous Agents in Stochastic Environments*](https://link.springer.com/chapter/10.1007/978-981-99-9836-4_3) ([doi:10.1007/978-981-99-9836-4_3](https://doi.org/10.1007/978-981-99-9836-4_3)); Vishwanath & Omlin (2025), [*Localized Affinity-Based Reinforcement Learning for Interpretable State-Specific Decision-Making*](https://link.springer.com/chapter/10.1007/978-3-031-77915-2_16) ([doi:10.1007/978-3-031-77915-2_16](https://doi.org/10.1007/978-3-031-77915-2_16)). Full entries in [`docs/technical-overview.md`](docs/technical-overview.md#affinity-based-reinforcement-learning-abrl).
+
 ---
 
 ## License

@@ -58,27 +58,33 @@ The Fog-of-Love-inspired world is implemented in **OpenAI Gym** with explicit st
 
 ## Affinity-based reinforcement learning (ABRL)
 
-**Summary.** ABRL augments the usual RL objective with a **regularizer** \(L\) that nudges each agent’s policy toward a **prior** \(\pi_0\) over actions (a “role model” distribution). The scalar **\(\lambda\)** trades off **reward maximization** versus **staying close to that prior**. *Global* affinities fix \(\pi_0\) over the three scene options. *Localized* affinities make \(\pi_0\) depend on the current **state** (and, in the generalized form, the sampled action). **Algorithm 1** in the write-up decides which option should receive high prior mass when a chosen **virtue goal** is still unmet and an option’s sign matches the goal’s sign. In this repository, that logic lives in **`check_affinity_condition`** in `scripts/fol/training/affinity_condition.py` (indices **14–20** pick which flattened observation entry is the goal channel used by the condition).
+**Summary.** ABRL augments the usual RL objective with a regularizer $L$ that nudges each agent’s policy toward a prior $\pi_0$ over actions (a “role model” distribution). The scalar $\lambda$ trades off reward maximization versus staying close to that prior. *Global* affinities fix $\pi_0$ over the three scene options. *Localized* affinities make $\pi_0$ depend on the current **state** (and, in the generalized form, the sampled action). **Algorithm 1** in the write-up decides which option should receive high prior mass when a chosen **virtue goal** is still unmet and an option’s sign matches the goal’s sign. In this repository, that logic lives in **`check_affinity_condition`** in `scripts/fol/training/affinity_condition.py` (indices **14–20** pick which flattened observation entry is the goal channel used by the condition).
 
 **Objective.**
 
-\[
+$$
 J(\theta) = \mathbb{E}_{S,A \sim \mathcal{D}}\bigl[R(S,A)\bigr] - \lambda L
-\]
+$$
 
-**Global affinity term.** The unlocalized loss compares the policy’s mass on each discrete action \(a_j\) to a fixed prior \(\pi_0(a_j \mid A)\) (in code: `reg_params` per player in `maddpg_abrl`):
+**Global affinity term.** The unlocalized loss compares the policy’s mass on each discrete action $a_j$ to a fixed prior $\pi_0(a_j \mid A)$ (in code: `reg_params` per player in `maddpg_abrl`):
 
-\[
+$$
 L = \frac{1}{M}\sum_{j=0}^{M-1}\Bigl[\mathbb{E}_{A \sim \pi_\theta}[a_j] - \pi_0(a_j \mid A)\Bigr]
-\]
+$$
 
-**Localized affinity term.** State-(and-action-)dependent prior \(\pi_{0,i}(a_j \mid S, A)\) with a **squared** gap:
+**Localized affinity term.** State-(and-action-)dependent prior $\pi_{0,i}(a_j \mid S, A)$ with a **squared** gap:
 
-\[
+$$
 L_s = \frac{1}{M}\sum_{j=0}^{M-1}\Bigl[\mathbb{E}_{S,A \sim \pi_\theta}[a_j] - \pi_{0,i}(a_j \mid S, A)\Bigr]^2
-\]
+$$
 
-Here \(M\) is the number of discrete actions (this env: **three** scene options). **MADDPG** supplies separate actors and a shared critic; ABRL modifies the **actor** side through these terms.
+Here $M$ is the number of discrete actions (this env: **three** scene options). **MADDPG** supplies separate actors and a shared critic; ABRL modifies the **actor** side through these terms.
+
+**References (ABRL).**
+
+1. Vishwanath, A., & Omlin, C. (2024). [Exploring Affinity-Based Reinforcement Learning for Designing Artificial Virtuous Agents in Stochastic Environments](https://link.springer.com/chapter/10.1007/978-981-99-9836-4_3). In *Frontiers of Artificial Intelligence, Ethics, and Multidisciplinary Applications* (FAIEMA 2023), pp. 25–38. Springer, Singapore. https://doi.org/10.1007/978-981-99-9836-4_3
+
+2. Vishwanath, A., & Omlin, C. (2025). [Localized Affinity-Based Reinforcement Learning for Interpretable State-Specific Decision-Making](https://link.springer.com/chapter/10.1007/978-3-031-77915-2_16). In *Artificial Intelligence XLI* (SGAI 2024), Lecture Notes in Computer Science, vol. 15446, pp. 221–234. Springer, Cham. https://doi.org/10.1007/978-3-031-77915-2_16
 
 ---
 
@@ -90,8 +96,8 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 | `scripts/fol/training/run_fol.py` | **Single entrypoint** (`python -m fol.training.run_fol …`). Parses CLI modes, builds `FolTrainingConfig`, selects the `MADDPG` class, and passes **`lambda_`**, **`affinity_indices`**, **`affinity_condition`**, and/or **`reg_params`** into the algorithm. |
 | `scripts/fol/training/affinity_condition.py` → `check_affinity_condition` | **Localized prior gate:** maps `(state_vector, affinity_idx)` → `(option_1_to_3, bool)` for state-dependent conditioning. |
 | `fol.train_config.py` | Optional **`--config path.yaml`**: YAML is validated and expanded to the same argv tail as the CLI (see `argv_suffix_from_yaml`). |
-| `AgileRL/agilerl/algorithms/maddpg_local_abrl.py` | **Localized ABRL** implementation used by **`arg_main`** and **`mul_main`**: squared loss form, `affinity_indices`, callable `affinity_condition`, default **\((0.2, 0.6, 0.2)\)** `reg_params` over the three options when the condition fires. **`arg_main`:** CLI **\(\lambda\)** is forwarded. **`mul_main`:** multiple indices per player (lists split by **`_`**). |
-| `AgileRL/agilerl/algorithms/maddpg_abrl.py` | **Global** ABRL: prior mass over actions **`{0,1,2}`** built from **`vanilla_main`**’s two **`reg`** indices in **`[0,2]`** (each picks a “boosted” option; **\(1/3\)** base mass is encoded in `run_fol.py`). **`lambda_`** is fixed at **5.0** in code for this branch. |
+| `AgileRL/agilerl/algorithms/maddpg_local_abrl.py` | **Localized ABRL** implementation used by **`arg_main`** and **`mul_main`**: squared loss form, `affinity_indices`, callable `affinity_condition`, default $(0.2, 0.6, 0.2)$ `reg_params` over the three options when the condition fires. **`arg_main`:** CLI $\lambda$ is forwarded. **`mul_main`:** multiple indices per player (lists split by **`_`**). |
+| `AgileRL/agilerl/algorithms/maddpg_abrl.py` | **Global** ABRL: prior mass over actions **`{0,1,2}`** built from **`vanilla_main`**’s two **`reg`** indices in **`[0,2]`** (each picks a “boosted” option; $1/3$ base mass is encoded in `run_fol.py`). **`lambda_`** is fixed at **5.0** in code for this branch. |
 | `AgileRL/agilerl/algorithms/maddpg.py` | Vanilla **MADDPG** used when **`abrl=0`** (any mode) and for **`basic_main`**, which **must** use **`abrl=0`** in this driver (the CLI and YAML loader reject **`abrl=1`**). Use **`arg_main`** for localized ABRL with **`maddpg_local_abrl`**. |
 | `configs/*.yaml` | Smoke / experiment notes; `recipe` field selects how YAML maps to `run_fol` arguments (see `fol.train_config.py`). |
 
