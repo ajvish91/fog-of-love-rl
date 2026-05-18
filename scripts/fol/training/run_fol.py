@@ -62,7 +62,10 @@ class Run:
         gpu = config.gpu
         debug = config.debug
         is_abrl = config.abrl
-        MADDPG = _maddpg_class(v)
+        if is_abrl:
+            MADDPG = _maddpg_class(v)
+        else:
+            from agilerl.algorithms.maddpg import MADDPG
 
         self._variant = v
         self.device = torch.device("cuda:" + gpu if torch.cuda.is_available() else "cpu")
