@@ -1,6 +1,6 @@
 from pprint import pprint
 import torch
-from fol_env import FoLEnvironment
+from fol.env import FoLEnvironment
 from agilerl.algorithms.maddpg_local_abrl import MADDPG
 from agilerl.components.multi_agent_replay_buffer import MultiAgentReplayBuffer
 import wandb
@@ -683,7 +683,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 3 and sys.argv[1] in ("--config", "-c"):
         cfg_path = Path(sys.argv[2])
         try:
-            from fol_train_config import load_yaml_mapping, parse_arg_localized
+            from fol.train_config import load_yaml_mapping, parse_arg_localized
 
             raw = load_yaml_mapping(cfg_path)
             debug, abrl, gpu, aff_idx_1, aff_idx_2, lambda_ = parse_arg_localized(raw, cfg_path)

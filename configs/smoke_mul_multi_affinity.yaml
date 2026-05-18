@@ -1,4 +1,4 @@
-# Equivalent to: python -m fol_training.run_fol mul_main 1 1 0 14 15 _ 14
+# Equivalent to: python -m fol.training.run_fol mul_main 1 1 0 14 15 _ 14
 recipe: mul_multi_affinity
 debug: true
 abrl: true

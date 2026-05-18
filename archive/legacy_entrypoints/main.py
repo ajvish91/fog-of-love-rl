@@ -1,6 +1,6 @@
 from pprint import pprint
 import torch
-from fol_env import FoLEnvironment
+from fol.env import FoLEnvironment
 from agilerl.algorithms.maddpg_local_abrl import MADDPG
 from agilerl.components.multi_agent_replay_buffer import MultiAgentReplayBuffer
 import wandb

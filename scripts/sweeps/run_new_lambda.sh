@@ -2,7 +2,7 @@
 # Requires WANDB_API_KEY when running with debug=0.
 SWEEP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SWEEP_DIR}/../.." && pwd)"
-# shellcheck source=../fol_docker.inc.sh
+# shellcheck source=../fol_docker.inc.sh disable=SC1091
 source "${REPO_ROOT}/scripts/fol_docker.inc.sh"
 
 start=14
@@ -20,10 +20,10 @@ are_lists_unique() {
 }
 
 while true; do
-  list1=($(seq $start $end))
-  list2=($(seq $start $end))
-  shuffled_list1=($(shuf -e "${list1[@]}"))
-  shuffled_list2=($(shuf -e "${list2[@]}"))
+  mapfile -t list1 < <(seq "$start" "$end")
+  mapfile -t list2 < <(seq "$start" "$end")
+  mapfile -t shuffled_list1 < <(shuf -e "${list1[@]}")
+  mapfile -t shuffled_list2 < <(shuf -e "${list2[@]}")
   if are_lists_unique; then
     break
   fi
@@ -35,7 +35,7 @@ echo "Shuffled list2: ${shuffled_list2[*]}"
 for gpu in $(seq $gpu_start $gpu_end); do
   a=${shuffled_list1[$gpu]}
   b=${shuffled_list2[$gpu]}
-  echo "Running: python -m fol_training.run_fol arg_main 0 1 ${gpu} ${a} ${b} 5.0"
-  fol_docker_run "45-69" "python -m fol_training.run_fol arg_main 0 1 ${gpu} ${a} ${b} 5.0" &
+  echo "Running: python -m fol.training.run_fol arg_main 0 1 ${gpu} ${a} ${b} 5.0"
+  fol_docker_run "45-69" "python -m fol.training.run_fol arg_main 0 1 ${gpu} ${a} ${b} 5.0" &
 done
 wait

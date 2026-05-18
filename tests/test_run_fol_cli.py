@@ -1,4 +1,4 @@
-"""CLI argument validation for `fol_training.run_fol` (no training loop)."""
+"""CLI argument validation for `fol.training.run_fol` (no training loop)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import pytest
 
 pytest.importorskip("torch")
 
-from fol_training.run_fol import (
+from fol.training.run_fol import (
     _split_mul_lists,
     _validate_mul_list_elements,
     _maddpg_class,

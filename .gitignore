@@ -53,7 +53,7 @@ archive/artifacts/*
 .DS_Store
 Thumbs.db
 
-# Obsolete root entrypoints / env stubs (use python -m fol_training.run_fol; copies live under archive/legacy_entrypoints)
+# Obsolete root entrypoints / env stubs (use python -m fol.training.run_fol; copies live under archive/legacy_entrypoints)
 /arg_main.py
 /basic_main.py
 /mul_main.py

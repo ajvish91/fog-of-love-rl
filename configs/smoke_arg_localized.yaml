@@ -1,4 +1,4 @@
-# Short CPU/GPU smoke run (matches README: python -m fol_training.run_fol arg_main 1 1 0 14 14 5.0)
+# Short CPU/GPU smoke run (matches README: python -m fol.training.run_fol arg_main 1 1 0 14 14 5.0)
 recipe: arg_localized
 debug: true
 abrl: true

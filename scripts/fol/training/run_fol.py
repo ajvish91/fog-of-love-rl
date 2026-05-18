@@ -15,8 +15,8 @@ import torch
 import wandb
 from tqdm import tqdm
 
-from fol_env import FoLEnvironment
-from fol_training.affinity_condition import check_affinity_condition
+from fol.env import FoLEnvironment
+from fol.training.affinity_condition import check_affinity_condition
 from agilerl.components.multi_agent_replay_buffer import MultiAgentReplayBuffer
 
 
@@ -798,7 +798,7 @@ def run_training_pipeline(run, abrl):
 def main(argv=None):
     argv = list(argv if argv is not None else sys.argv)
     if len(argv) >= 3 and argv[1] in ("--config", "-c"):
-        from fol_train_config import argv_suffix_from_yaml
+        from fol.train_config import argv_suffix_from_yaml
 
         cfg_path = Path(argv[2])
         try:
@@ -811,8 +811,8 @@ def main(argv=None):
     print(argv)
     if len(argv) < 2 or argv[1] not in COMPAT_MODES:
         print(
-            "Usage: python -m fol_training.run_fol <arg_main|basic_main|vanilla_main|mul_main> ...\n"
-            "   or: python -m fol_training.run_fol --config configs/smoke_arg_localized.yaml\n"
+            "Usage: python -m fol.training.run_fol <arg_main|basic_main|vanilla_main|mul_main> ...\n"
+            "   or: python -m fol.training.run_fol --config configs/smoke_arg_localized.yaml\n"
             "  arg_main:    <debug 0|1> <abrl 0|1> <gpu 0-11> <aff1 14-20> <aff2 14-20> <lambda float>\n"
             "  basic_main:  <debug> <abrl> <gpu 0-11> <aff1 14-20> <aff2 14-20>\n"
             "  vanilla_main:<debug> <abrl> <gpu 0-11> <reg1 0-2> <reg2 0-2>\n"
@@ -866,7 +866,7 @@ def main(argv=None):
         if abrl:
             print(
                 "basic_main with abrl=1 is not supported in the unified driver (stock MADDPG is built without "
-                "affinity arguments). Use: python -m fol_training.run_fol arg_main … for localized ABRL.",
+                "affinity arguments). Use: python -m fol.training.run_fol arg_main … for localized ABRL.",
                 file=sys.stderr,
             )
             sys.exit(1)

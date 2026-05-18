@@ -1,4 +1,4 @@
-"""Short end-to-end runs: debug=1 plus FOL_TEST_MINIMAL (see fol_training.run_fol)."""
+"""Short end-to-end runs: debug=1 plus FOL_TEST_MINIMAL (see fol.training.run_fol)."""
 
 from __future__ import annotations
 
@@ -8,8 +8,8 @@ import pytest
 
 pytest.importorskip("torch")
 
-from fol_train_config import argv_suffix_from_yaml
-from fol_training.run_fol import main
+from fol.train_config import argv_suffix_from_yaml
+from fol.training.run_fol import main
 
 
 @pytest.mark.parametrize(

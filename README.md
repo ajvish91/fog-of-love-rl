@@ -10,10 +10,10 @@ This repository trains **two cooperative–competitive agents** in a **Gym-style
 
 | Piece | Role |
 |-------|------|
-| **`fol_env.py`** | `FoLEnvironment`: simultaneous two-player steps, **Dict** observations, **Discrete(3)** actions, `match` / `no_match` satisfaction coupling—**no RL algorithm** inside, just transitions + rewards. |
-| **`fol_training/`** | Unified driver **`python -m fol_training.run_fol`** switches **`arg_main` / `basic_main` / `vanilla_main` / `mul_main`** → `maddpg_local_abrl`, `maddpg_abrl`, or stock **`maddpg`**, plus W&B logging hooks. |
-| **`AgileRL/`** | Vendored library **`pip install -e .`**; hosts the modified actor–critic stacks and ABRL losses (`maddpg_local_abrl.py`, `maddpg_abrl.py`, …). |
-| **`configs/`** | Validated **YAML** `recipe:` files (smoke + sweeps) expanded by `fol_train_config.py` to the same argv as the CLI. |
+| **`scripts/fol/`** | Python package: **`env.py`** (`FoLEnvironment`), **`attributes.py`**, **`train_config.py`**, **`training/run_fol.py`** (CLI). |
+| **`scripts/`** | Smoke tests, Docker helpers, **`sweeps/`** batch launchers. |
+| **`AgileRL/`** | Vendored library **`pip install -e .`**; modified MADDPG + ABRL (`maddpg_local_abrl.py`, `maddpg_abrl.py`, …). |
+| **`configs/`** | YAML **`recipe:`** files expanded by **`fol.train_config`** to CLI argv. |
 
 Deeper write-ups live under **`docs/`**: how the tabletop game maps to the simulator, ABRL notation, and the full module map are in **[`technical-overview.md`](docs/technical-overview.md)**; day-to-day commands and Docker patterns are in **[`training-cli.md`](docs/training-cli.md)**.
 
@@ -30,12 +30,12 @@ cd fol_latest_codebase
 ./scripts/setup_venv.sh            # Linux: full requirements.txt; macOS: skips CUDA pins
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 mkdir -p plots
-python -m fol_training.run_fol arg_main 1 1 0 14 14 5.0
+python -m fol.training.run_fol arg_main 1 1 0 14 14 5.0
 ```
 
 Or use the smoke wrapper: **`./scripts/fol_smoke.sh check`** then **`./scripts/fol_smoke.sh train-only`** (uses **`.venv/bin/python`** when present). Details: **`docs/training-cli.md`**.
 
-**Automated tests:** with the same venv, run `pip install pytest`, then `MPLBACKEND=Agg FOL_TEST_MINIMAL=1 pytest tests/ -v`. `FOL_TEST_MINIMAL` shortens `debug=1` training loops only during tests (see `fol_training/run_fol.py`). CI runs `pytest` after installing `requirements.txt` and editable `AgileRL`.
+**Automated tests:** with the same venv, run `pip install pytest`, then `MPLBACKEND=Agg FOL_TEST_MINIMAL=1 pytest tests/ -v`. `FOL_TEST_MINIMAL` shortens `debug=1` training loops only during tests (see `scripts/fol/training/run_fol.py`). CI runs `pytest` after installing `requirements.txt` and editable `AgileRL`.
 
 The last line runs a **tiny** training job (`debug=1`) so you can confirm everything wires up. For longer runs and optional [Weights & Biases](https://wandb.ai) logging, copy **`.env.example`** to **`.env`**, add your API key, then see **`docs/training-cli.md`**.
 
@@ -50,7 +50,7 @@ docker build -t fol-rl .
 docker run --rm fol-rl
 ```
 
-The image sets **`ENTRYPOINT python -m fol_training.run_fol`** and a default **YAML** smoke **`CMD`**; append arguments after the image name to swap recipes or pass **`arg_main …`** positional tails. Full examples: **`docs/training-cli.md`**.
+The image sets **`ENTRYPOINT python -m fol.training.run_fol`** and a default **YAML** smoke **`CMD`**; append arguments after the image name to swap recipes or pass **`arg_main …`** positional tails. Full examples: **`docs/training-cli.md`**.
 
 ---
 
@@ -75,7 +75,7 @@ If this code helps your work, cite your eventual paper or preprint when it exist
 
 ## License
 
-Environment and training code at the repo root are **Apache License 2.0** (see **`LICENSE`**). The **`AgileRL/`** directory is upstream AgileRL **plus local modifications**, still Apache-2.0—see **`NOTICE`** and **`AgileRL/LICENSE`**.
+Environment and training code under **`scripts/fol/`** are **Apache License 2.0** (see **`LICENSE`**). The **`AgileRL/`** directory is upstream AgileRL **plus local modifications**, still Apache-2.0—see **`NOTICE`** and **`AgileRL/LICENSE`**.
 
 ---
 

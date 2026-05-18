@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fol_training.affinity_condition import check_affinity_condition
+from fol.training.affinity_condition import check_affinity_condition
 
 
 def _state_zeros(n: int = 80) -> list[float]:

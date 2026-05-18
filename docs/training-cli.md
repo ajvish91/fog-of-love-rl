@@ -1,13 +1,15 @@
 # Training CLI quick reference
 
-All training runs through **`fol_training.run_fol`**. For **background** (game vs simulator, ABRL math, module map), see **[`technical-overview.md`](technical-overview.md)**. For **how `AgileRL/` is stored in Git**, see **[`agilerl-layout.md`](agilerl-layout.md)**.
+All training runs through **`fol.training.run_fol`**. Python code lives under **`scripts/fol/`**; after **`./scripts/setup_venv.sh`** the venv can import `fol` automatically, or set `export PYTHONPATH="${PWD}/scripts"`.
+
+For **background** (game vs simulator, ABRL math, module map), see **[`technical-overview.md`](technical-overview.md)**. For **how `AgileRL/` is stored in Git**, see **[`agilerl-layout.md`](agilerl-layout.md)**.
 
 From the repository root (with `AgileRL` installed editable, as in `README.md`):
 
 ```bash
-python -m fol_training.run_fol <MODE> <positional args …>
-python -m fol_training.run_fol --config path/to/recipe.yaml
-python -m fol_training.run_fol -c path/to/recipe.yaml
+python -m fol.training.run_fol <MODE> <positional args …>
+python -m fol.training.run_fol --config path/to/recipe.yaml
+python -m fol.training.run_fol -c path/to/recipe.yaml
 ```
 
 ## Modes (positional)
@@ -23,18 +25,18 @@ Example (localized ABRL smoke):
 
 ```bash
 mkdir -p plots
-python -m fol_training.run_fol arg_main 1 1 0 14 14 5.0
+python -m fol.training.run_fol arg_main 1 1 0 14 14 5.0
 ```
 
 Example (multi-index):
 
 ```bash
-python -m fol_training.run_fol mul_main 1 1 0 14 15 _ 14
+python -m fol.training.run_fol mul_main 1 1 0 14 15 _ 14
 ```
 
 ## YAML (`--config` / `-c`)
 
-`fol_train_config.py` maps `recipe:` to the same argv as above.
+`fol.train_config` maps `recipe:` to the same argv as above.
 
 | `recipe` | Typical file | Maps to |
 |----------|----------------|---------|
@@ -100,7 +102,7 @@ Build:
 docker build -t fol-rl .
 ```
 
-The image uses `ENTRYPOINT ["python", "-m", "fol_training.run_fol"]` and a default **`CMD`** that points at a smoke YAML recipe (`configs/smoke_arg_localized.yaml` unless you change the Dockerfile).
+The image uses `ENTRYPOINT ["python", "-m", "fol.training.run_fol"]` and a default **`CMD`** that points at a smoke YAML recipe (`configs/smoke_arg_localized.yaml` unless you change the Dockerfile).
 
 Examples:
 
@@ -127,7 +129,7 @@ When not in `debug` mode, runs may log to one of:
 - `fol-abrl-agile-implement` — global ABRL (`vanilla_main` with ABRL)
 - `fol-agile-implement` — no ABRL
 
-Exact project choice is implemented in `fol_training/run_fol.py` (`Run` / `FolTrainingConfig`).
+Exact project choice is implemented in `scripts/fol/training/run_fol.py` (`Run` / `FolTrainingConfig`).
 
 ## Analysis artifacts (not in Git)
 

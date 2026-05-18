@@ -58,7 +58,7 @@ The Fog-of-Love-inspired world is implemented in **OpenAI Gym** with explicit st
 
 ## Affinity-based reinforcement learning (ABRL)
 
-**Summary.** ABRL augments the usual RL objective with a **regularizer** \(L\) that nudges each agent’s policy toward a **prior** \(\pi_0\) over actions (a “role model” distribution). The scalar **\(\lambda\)** trades off **reward maximization** versus **staying close to that prior**. *Global* affinities fix \(\pi_0\) over the three scene options. *Localized* affinities make \(\pi_0\) depend on the current **state** (and, in the generalized form, the sampled action). **Algorithm 1** in the write-up decides which option should receive high prior mass when a chosen **virtue goal** is still unmet and an option’s sign matches the goal’s sign. In this repository, that logic lives in **`check_affinity_condition`** in `fol_training/affinity_condition.py` (indices **14–20** pick which flattened observation entry is the goal channel used by the condition).
+**Summary.** ABRL augments the usual RL objective with a **regularizer** \(L\) that nudges each agent’s policy toward a **prior** \(\pi_0\) over actions (a “role model” distribution). The scalar **\(\lambda\)** trades off **reward maximization** versus **staying close to that prior**. *Global* affinities fix \(\pi_0\) over the three scene options. *Localized* affinities make \(\pi_0\) depend on the current **state** (and, in the generalized form, the sampled action). **Algorithm 1** in the write-up decides which option should receive high prior mass when a chosen **virtue goal** is still unmet and an option’s sign matches the goal’s sign. In this repository, that logic lives in **`check_affinity_condition`** in `scripts/fol/training/affinity_condition.py` (indices **14–20** pick which flattened observation entry is the goal channel used by the condition).
 
 **Objective.**
 
@@ -86,14 +86,14 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 
 | Piece | What to know |
 |--------|----------------|
-| `fol_env.py`, `fol_attributes.py` | Markov game: observations, three options per step, rewards, `match` / `no_match` satisfaction shifts. No ABRL here—only transition and reward semantics. |
-| `fol_training/run_fol.py` | **Single entrypoint** (`python -m fol_training.run_fol …`). Parses CLI modes, builds `FolTrainingConfig`, selects the `MADDPG` class, and passes **`lambda_`**, **`affinity_indices`**, **`affinity_condition`**, and/or **`reg_params`** into the algorithm. |
-| `fol_training/affinity_condition.py` → `check_affinity_condition` | **Localized prior gate:** maps `(state_vector, affinity_idx)` → `(option_1_to_3, bool)` for state-dependent conditioning. |
-| `fol_train_config.py` | Optional **`--config path.yaml`**: YAML is validated and expanded to the same argv tail as the CLI (see `argv_suffix_from_yaml`). |
+| `scripts/fol/env.py`, `scripts/fol/attributes.py` | Markov game: observations, three options per step, rewards, `match` / `no_match` satisfaction shifts. No ABRL here—only transition and reward semantics. |
+| `scripts/fol/training/run_fol.py` | **Single entrypoint** (`python -m fol.training.run_fol …`). Parses CLI modes, builds `FolTrainingConfig`, selects the `MADDPG` class, and passes **`lambda_`**, **`affinity_indices`**, **`affinity_condition`**, and/or **`reg_params`** into the algorithm. |
+| `scripts/fol/training/affinity_condition.py` → `check_affinity_condition` | **Localized prior gate:** maps `(state_vector, affinity_idx)` → `(option_1_to_3, bool)` for state-dependent conditioning. |
+| `fol.train_config.py` | Optional **`--config path.yaml`**: YAML is validated and expanded to the same argv tail as the CLI (see `argv_suffix_from_yaml`). |
 | `AgileRL/agilerl/algorithms/maddpg_local_abrl.py` | **Localized ABRL** implementation used by **`arg_main`** and **`mul_main`**: squared loss form, `affinity_indices`, callable `affinity_condition`, default **\((0.2, 0.6, 0.2)\)** `reg_params` over the three options when the condition fires. **`arg_main`:** CLI **\(\lambda\)** is forwarded. **`mul_main`:** multiple indices per player (lists split by **`_`**). |
 | `AgileRL/agilerl/algorithms/maddpg_abrl.py` | **Global** ABRL: prior mass over actions **`{0,1,2}`** built from **`vanilla_main`**’s two **`reg`** indices in **`[0,2]`** (each picks a “boosted” option; **\(1/3\)** base mass is encoded in `run_fol.py`). **`lambda_`** is fixed at **5.0** in code for this branch. |
 | `AgileRL/agilerl/algorithms/maddpg.py` | Vanilla **MADDPG** used when **`abrl=0`** (any mode) and for **`basic_main`**, which **must** use **`abrl=0`** in this driver (the CLI and YAML loader reject **`abrl=1`**). Use **`arg_main`** for localized ABRL with **`maddpg_local_abrl`**. |
-| `configs/*.yaml` | Smoke / experiment notes; `recipe` field selects how YAML maps to `run_fol` arguments (see `fol_train_config.py`). |
+| `configs/*.yaml` | Smoke / experiment notes; `recipe` field selects how YAML maps to `run_fol` arguments (see `fol.train_config.py`). |
 
 **Mode → algorithm:** `arg_main` → `local_abrl` → `maddpg_local_abrl`; `mul_main` → `multi_local_abrl` → `maddpg_local_abrl`; `vanilla_main` → `maddpg_abrl`; `basic_main` → `standard_maddpg` → stock `maddpg`.
 
@@ -103,11 +103,11 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 
 | Path | Role |
 |------|------|
-| `fol_env.py` | Gym-style `FoLEnvironment`: virtues, satisfaction, scenario options, rewards |
-| `fol_attributes.py` | Domain objects (e.g. virtues) used by the environment |
-| `fol_training/` | Python package for training: **`run_fol.py`** is the supported driver |
-| `fol_training/run_fol.py` | **Unified training entrypoint.** `python -m fol_training.run_fol <MODE> …` or `--config` / `-c`. |
-| `fol_train_config.py` | Loads and validates YAML recipes in `configs/`. |
+| `scripts/fol/env.py` | Gym-style `FoLEnvironment`: virtues, satisfaction, scenario options, rewards |
+| `scripts/fol/attributes.py` | Domain objects (e.g. virtues) used by the environment |
+| `scripts/fol/training/` | Python package for training: **`run_fol.py`** is the supported driver |
+| `scripts/fol/training/run_fol.py` | **Unified training entrypoint.** `python -m fol.training.run_fol <MODE> …` or `--config` / `-c`. |
+| `fol.train_config.py` | Loads and validates YAML recipes in `configs/`. |
 | `configs/` | YAML recipes (`recipe:` + fields). |
 | `docs/training-cli.md` | CLI / YAML / Docker cheat sheet. |
 | `docs/agilerl-layout.md` | AgileRL Git policy (vendored vs submodule vs subtree). |
@@ -118,7 +118,7 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 | `scripts/smoke_training.py` | Python smoke: YAML expansion + short training. |
 | `archive/notebooks/get_history.ipynb` | Notebook for inspecting W&B exports under `archive/artifacts/` |
 | `requirements.txt` | Pinned Python dependencies |
-| `Dockerfile` | Image build; `ENTRYPOINT` is `python -m fol_training.run_fol` |
+| `Dockerfile` | Image build; `ENTRYPOINT` is `python -m fol.training.run_fol` |
 
 ---
 
@@ -126,7 +126,7 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 
 Pushes and pull requests run `.github/workflows/smoke.yml`, which installs dependencies and editable **`AgileRL`**, then:
 
-1. **`./scripts/fol_smoke.sh check`** — `bash -n` + **ShellCheck** on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `scripts/sweeps/run_*.sh`; then **`python scripts/smoke_training.py check`** (every `configs/smoke_*.yaml` through `fol_train_config.argv_suffix_from_yaml`).
+1. **`./scripts/fol_smoke.sh check`** — `bash -n` + **ShellCheck** on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `scripts/sweeps/run_*.sh`; then **`python scripts/smoke_training.py check`** (every `configs/smoke_*.yaml` through `fol.train_config.argv_suffix_from_yaml`).
 2. **`./scripts/fol_smoke.sh train-only`** — one short training run via **`python scripts/smoke_training.py train`** (default `configs/smoke_arg_localized.yaml`).
 
 ShellCheck sourcing conventions for sweep scripts are described in **`training-cli.md`**.

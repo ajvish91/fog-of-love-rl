@@ -1,9 +1,9 @@
 import gym
 from gym import spaces
 import numpy as np
-import fol_attributes as fol
+import fol.attributes as fol
 import random
-from fol_attributes import *
+from fol.attributes import *
 import pprint
 
 class FoLEnvironment(gym.Env):

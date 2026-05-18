@@ -2,14 +2,14 @@
 # Requires WANDB_API_KEY when running with debug=0.
 SWEEP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SWEEP_DIR}/../.." && pwd)"
-# shellcheck source=../fol_docker.inc.sh
+# shellcheck source=../fol_docker.inc.sh disable=SC1091
 source "${REPO_ROOT}/scripts/fol_docker.inc.sh"
 
 start=0
 end=11
 
 for gpu in $(seq $start $end); do
-  fol_docker_run "75-89" "python -m fol_training.run_fol vanilla_main 0 1 ${gpu} 0 0" &
+  fol_docker_run "75-89" "python -m fol.training.run_fol vanilla_main 0 1 ${gpu} 0 0" &
   echo "$gpu" &
 done
 wait

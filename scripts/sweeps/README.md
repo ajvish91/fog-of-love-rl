@@ -1,6 +1,6 @@
 # Docker sweep launchers
 
-Batch training on a host with Docker. Each script sources `scripts/fol_docker.inc.sh` and calls `fol_docker_run` with different `python -m fol_training.run_fol` arguments.
+Batch training on a host with Docker. Each script sources `scripts/fol_docker.inc.sh` and calls `fol_docker_run` with different `python -m fol.training.run_fol` arguments.
 
 Run from the **repository root** (so the default `FOL_DOCKER_VOLUME` mount is the checkout):
 

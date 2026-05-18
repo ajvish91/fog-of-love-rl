@@ -44,5 +44,9 @@ if [[ "$(uname -s)" == Darwin ]]; then
 else
   pip install -e ./AgileRL
 fi
+SITE_PACKAGES="$(python -c 'import site; print(site.getsitepackages()[0])')"
+echo "${ROOT}/scripts" > "${SITE_PACKAGES}/fol_repo_scripts.pth"
+echo "[setup_venv] added ${SITE_PACKAGES}/fol_repo_scripts.pth -> scripts/ (import fol.* without PYTHONPATH)"
+
 echo "[setup_venv] done. Activate with: source .venv/bin/activate"
 echo "[setup_venv] Then run: ./scripts/fol_smoke.sh check && ./scripts/fol_smoke.sh train-only"

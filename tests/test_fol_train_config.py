@@ -9,7 +9,7 @@ import pytest
 
 yaml = pytest.importorskip("yaml")
 
-from fol_train_config import (
+from fol.train_config import (
     argv_suffix_from_yaml,
     load_yaml_mapping,
     parse_arg_localized,

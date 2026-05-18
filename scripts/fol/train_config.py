@@ -132,7 +132,7 @@ def _b01(x: bool) -> str:
 
 
 def argv_suffix_from_yaml(path: Path) -> list[str]:
-    """Build `sys.argv[1:]` for `fol_training.run_fol.main` from a YAML file."""
+    """Build `sys.argv[1:]` for `fol.training.run_fol.main` from a YAML file."""
     path = path.resolve()
     raw = load_yaml_mapping(path)
     recipe = raw.get("recipe")

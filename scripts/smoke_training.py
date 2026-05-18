@@ -14,6 +14,24 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
+def _scripts_dir() -> Path:
+    return _repo_root() / "scripts"
+
+
+def _ensure_fol_on_path() -> None:
+    scripts = str(_scripts_dir())
+    if scripts not in sys.path:
+        sys.path.insert(0, scripts)
+
+
+def _train_env() -> dict[str, str]:
+    env = os.environ.copy()
+    scripts = str(_scripts_dir())
+    prev = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = scripts if not prev else f"{scripts}{os.pathsep}{prev}"
+    return env
+
+
 def _print_train_setup(python: str) -> None:
     root = _repo_root()
     print(
@@ -51,8 +69,8 @@ def cmd_check() -> int:
         print("ok parse:", path.relative_to(root))
 
     os.chdir(root)
-    sys.path.insert(0, str(root))
-    from fol_train_config import argv_suffix_from_yaml
+    _ensure_fol_on_path()
+    from fol.train_config import argv_suffix_from_yaml
 
     for path in configs:
         suffix = argv_suffix_from_yaml(path)
@@ -73,9 +91,9 @@ def cmd_train(args: argparse.Namespace) -> int:
     (root / "plots").mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("MPLBACKEND", "Agg")
     os.chdir(root)
-    argv = [sys.executable, "-m", "fol_training.run_fol", "--config", str(cfg.relative_to(root))]
+    argv = [sys.executable, "-m", "fol.training.run_fol", "--config", str(cfg.relative_to(root))]
     print("run:", " ".join(argv))
-    return subprocess.call(argv)
+    return subprocess.call(argv, env=_train_env())
 
 
 def main() -> int:

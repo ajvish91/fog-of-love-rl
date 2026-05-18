@@ -16,9 +16,12 @@ RUN pip install --no-cache-dir -e .
 WORKDIR /app
 COPY . .
 
+# FoL package lives under scripts/fol/
+ENV PYTHONPATH=/app/scripts
+
 # Weights & Biases: pass at runtime, e.g. docker run -e WANDB_API_KEY=...
 ENV WANDB_API_KEY=""
 
 # Quick smoke test by default (debug on). Override CMD for full training.
-ENTRYPOINT ["python", "-m", "fol_training.run_fol"]
+ENTRYPOINT ["python", "-m", "fol.training.run_fol"]
 CMD ["--config", "configs/smoke_arg_localized.yaml"]

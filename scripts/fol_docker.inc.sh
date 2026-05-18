@@ -13,7 +13,7 @@
 #
 # Example CPU-only smoke:
 #   export FOL_DOCKER_OPTIONS=""
-#   fol_docker_run "0-3" "python -m fol_training.run_fol arg_main 1 1 0 14 14 5.0"
+#   fol_docker_run "0-3" "python -m fol.training.run_fol arg_main 1 1 0 14 14 5.0"
 #
 # Same checks as CI (without Docker): from repo root run ./scripts/fol_smoke.sh check
 
@@ -31,5 +31,5 @@ fol_docker_run() {
   # shellcheck disable=SC2086
   docker run -d --rm -e WANDB_API_KEY --cpuset-cpus="${cpuset}" ${FOL_DOCKER_OPTIONS} \
     -v "${FOL_DOCKER_VOLUME}:/app" -w /app "${FOL_DOCKER_IMAGE}" \
-    bash -c "pip install -r requirements.txt && cd AgileRL/ && pip install -e . && cd .. && ${inner_command}"
+    bash -c "export PYTHONPATH=/app/scripts:\${PYTHONPATH:-} && pip install -r requirements.txt && cd AgileRL/ && pip install -e . && cd .. && ${inner_command}"
 }
