@@ -1,0 +1,40 @@
+name: Smoke training
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      MPLBACKEND: Agg
+      FOL_REQUIRE_SHELLCHECK: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libsdl2-dev shellcheck
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+          (cd AgileRL && pip install -e .)
+
+      - name: Pytest (config + CLI + short pipelines)
+        run: pytest tests/ -v --tb=short
+
+      - name: Smoke checks + short train
+        run: |
+          chmod +x scripts/fol_smoke.sh
+          ./scripts/fol_smoke.sh check
+          ./scripts/fol_smoke.sh train-only

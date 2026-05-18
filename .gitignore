@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Experiment tracking and outputs
+wandb/
+plots/*.png
+plots/*.pdf
+*.log
+output_test.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Obsolete root entrypoints / env stubs (use python -m fol_training.run_fol; copies live under archive/legacy_entrypoints)
+/arg_main.py
+/basic_main.py
+/mul_main.py
+/vanilla_main.py
+/main.py
+/fol_env_simple.py
+/fol_attributes_simple.py

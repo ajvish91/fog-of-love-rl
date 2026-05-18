@@ -1,0 +1,15 @@
+# Ignore all contents of the plots folder
+plots/*
+
+# But do not ignore the plots folder itself
+!plots/
+
+# Ignore wandb
+wandb/
+
+# Secrets and SCM
+.env
+.git
+.gitignore
+**/__pycache__
+**/*.pyc

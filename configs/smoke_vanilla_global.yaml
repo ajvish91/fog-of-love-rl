@@ -1,0 +1,7 @@
+# vanilla_main → maddpg_abrl; reg indices 0–2 (README: reg_idx_1/2; aff_slot_* is an alias).
+recipe: vanilla_global
+debug: true
+abrl: true
+gpu: "0"
+reg_idx_1: 0
+reg_idx_2: 0

@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: >-
+  Fog of Love: Engineering Virtuous Agent Behavior with Affinity-based
+  Reinforcement Learning in a Game Environment
+message: >-
+  If you use this software, please cite it using the metadata from this file
+  and cite AgileRL (https://github.com/AgileRL/AgileRL) separately.
+type: software
+authors:
+  - name: "Replace with published author list"
+repository-code: "https://github.com/REPLACE_ORG/fol_latest_codebase"
+abstract: >-
+  Two-player multi-agent environment based on relationship role-playing
+  dynamics, with MADDPG and affinity-based reinforcement learning for
+  interpretable virtuous behavior.
+keywords:
+  - reinforcement learning
+  - multi-agent systems
+  - machine ethics
+  - virtue ethics
+  - Fog of Love
+license: Apache-2.0
+preferred-citation:
+  type: article
+  title: >-
+    Fog of Love: Engineering Virtuous Agent Behavior with Affinity-based
+    Reinforcement Learning in a Game Environment
+  authors:
+    - name: "Replace with published author list"

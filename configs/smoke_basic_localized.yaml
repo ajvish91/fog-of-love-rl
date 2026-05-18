@@ -1,0 +1,8 @@
+# basic_main → stock AgileRL MADDPG only. Use abrl: false (run_basic_lambda.sh uses 0 0).
+# Localized ABRL with configurable λ belongs in recipe arg_localized / mode arg_main.
+recipe: basic_localized
+debug: true
+abrl: false
+gpu: "0"
+aff_idx_player_1: 14
+aff_idx_player_2: 14

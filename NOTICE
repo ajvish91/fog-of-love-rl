@@ -1,0 +1,8 @@
+Fog of Love RL — environment and training scripts
+Copyright 2026 the contributors to this repository.
+
+The `AgileRL/` directory is based on the AgileRL project
+(https://github.com/AgileRL/AgileRL), licensed under the Apache License,
+Version 2.0. It has been copied into this repository and modified locally
+(for example, multi-agent algorithms extended for affinity-based RL).
+A copy of the Apache-2.0 license text is in AgileRL/LICENSE.
