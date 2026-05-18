@@ -112,11 +112,11 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 | `docs/training-cli.md` | CLI / YAML / Docker cheat sheet. |
 | `docs/agilerl-layout.md` | AgileRL Git policy (vendored vs submodule vs subtree). |
 | `AgileRL/` | Local copy of [AgileRL](https://github.com/AgileRL/AgileRL) extended here for MADDPG + ABRL |
-| `run_*.sh` | Example Docker batch launchers; each `source`s `scripts/fol_docker.inc.sh`. |
+| `scripts/sweeps/run_*.sh` | Example Docker batch launchers; each `source`s `scripts/fol_docker.inc.sh`. |
 | `scripts/fol_docker.inc.sh` | `fol_docker_run <cpuset> '<inner command>'` wraps `docker run`. |
 | `scripts/fol_smoke.sh` | Local / CI smoke driver (ShellCheck, YAML checks, optional train). |
 | `scripts/smoke_training.py` | Python smoke: YAML expansion + short training. |
-| `get_history.ipynb` | Notebook for inspecting run history / artifacts |
+| `archive/notebooks/get_history.ipynb` | Notebook for inspecting W&B exports under `archive/artifacts/` |
 | `requirements.txt` | Pinned Python dependencies |
 | `Dockerfile` | Image build; `ENTRYPOINT` is `python -m fol_training.run_fol` |
 
@@ -126,24 +126,24 @@ Here \(M\) is the number of discrete actions (this env: **three** scene options)
 
 Pushes and pull requests run `.github/workflows/smoke.yml`, which installs dependencies and editable **`AgileRL`**, then:
 
-1. **`./scripts/fol_smoke.sh check`** — `bash -n` + **ShellCheck** on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `run_*.sh`; then **`python scripts/smoke_training.py check`** (every `configs/smoke_*.yaml` through `fol_train_config.argv_suffix_from_yaml`).
+1. **`./scripts/fol_smoke.sh check`** — `bash -n` + **ShellCheck** on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `scripts/sweeps/run_*.sh`; then **`python scripts/smoke_training.py check`** (every `configs/smoke_*.yaml` through `fol_train_config.argv_suffix_from_yaml`).
 2. **`./scripts/fol_smoke.sh train-only`** — one short training run via **`python scripts/smoke_training.py train`** (default `configs/smoke_arg_localized.yaml`).
 
-ShellCheck sourcing conventions for `run_*.sh` are described in **`training-cli.md`**.
+ShellCheck sourcing conventions for sweep scripts are described in **`training-cli.md`**.
 
 ---
 
-## Sweep scripts (`run_*.sh`)
+## Sweep scripts (`scripts/sweeps/`)
 
-Root `run_*.sh` scripts orchestrate **Docker** jobs. They `source` **`scripts/fol_docker.inc.sh`**, mount the repo (override **`FOL_DOCKER_VOLUME`** and related env vars—see comments in `fol_docker.inc.sh`), and pass **`WANDB_API_KEY`** when `debug=0`.
+Scripts under **`scripts/sweeps/`** orchestrate **Docker** jobs. They `source` **`scripts/fol_docker.inc.sh`**, mount the repository root by default (override **`FOL_DOCKER_VOLUME`**—see `fol_docker.inc.sh`), and pass **`WANDB_API_KEY`** when `debug=0`. Run from the repo root, e.g. `./scripts/sweeps/run_lambda.sh`.
 
 | Script | What it runs (mode / pattern) |
 |--------|-------------------------------|
-| `run_lambda.sh` | `arg_main` over affinity index and GPU loops |
-| `run_new_lambda.sh` | `arg_main` with shuffled unique affinity pairs |
-| `run_basic_lambda.sh` | `basic_main` (two CPU sets per iteration) |
-| `run_equal.sh` | `vanilla_main` with fixed reg indices `0 0` |
-| `run_abrl.sh` | `vanilla_main` grid over reg indices |
-| `run_satisfaction.sh` | `arg_main` with fixed indices `20 20` and a λ sweep |
+| `scripts/sweeps/run_lambda.sh` | `arg_main` over affinity index and GPU loops |
+| `scripts/sweeps/run_new_lambda.sh` | `arg_main` with shuffled unique affinity pairs |
+| `scripts/sweeps/run_basic_lambda.sh` | `basic_main` (two CPU sets per iteration) |
+| `scripts/sweeps/run_equal.sh` | `vanilla_main` with fixed reg indices `0 0` |
+| `scripts/sweeps/run_abrl.sh` | `vanilla_main` grid over reg indices |
+| `scripts/sweeps/run_satisfaction.sh` | `arg_main` with fixed indices `20 20` and a λ sweep |
 
 **CPU affinities** (`--cpuset-cpus`) in these files are **machine-specific**; edit when moving clusters.

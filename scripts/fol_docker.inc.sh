@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Shared Docker launcher for FoL training jobs.
 #
-# Source from repo root:
-#   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-#   source "${SCRIPT_DIR}/scripts/fol_docker.inc.sh"
+# Source from a sweep script (scripts/sweeps/) or repo root:
+#   REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"   # if cwd is scripts/
+#   source "${REPO_ROOT}/scripts/fol_docker.inc.sh"
 #
 # Environment (override before calling fol_docker_run):
 #   FOL_DOCKER_VOLUME   Host path mounted as /app (default below).
@@ -17,7 +17,10 @@
 #
 # Same checks as CI (without Docker): from repo root run ./scripts/fol_smoke.sh check
 
-FOL_DOCKER_VOLUME="${FOL_DOCKER_VOLUME:-/raid/home/ajayv/fol_local_abrl_container}"
+_fol_repo_root() {
+  cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd
+}
+FOL_DOCKER_VOLUME="${FOL_DOCKER_VOLUME:-$(_fol_repo_root)}"
 FOL_DOCKER_IMAGE="${FOL_DOCKER_IMAGE:-python:3.12}"
 FOL_DOCKER_OPTIONS="${FOL_DOCKER_OPTIONS:---gpus all}"
 

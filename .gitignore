@@ -32,6 +32,14 @@ plots/*.pdf
 *.log
 output_test.log
 
+# Local analysis exports (not versioned; see archive/artifacts/README.md)
+pareto_history.json
+player_*_act.pkl
+player_*_obs.pkl
+archive/artifacts/*
+!archive/artifacts/README.md
+!archive/artifacts/.gitkeep
+
 # Jupyter
 .ipynb_checkpoints/
 

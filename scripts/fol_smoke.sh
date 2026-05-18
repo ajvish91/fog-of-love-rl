@@ -90,13 +90,13 @@ _require_train_python() {
 
 _do_shell() {
   local f
-  for f in scripts/fol_docker.inc.sh scripts/fol_smoke.sh run_*.sh; do
+  for f in scripts/fol_docker.inc.sh scripts/fol_smoke.sh scripts/sweeps/run_*.sh; do
     echo "[fol_smoke] bash -n $f"
     bash -n "$f"
   done
   if command -v shellcheck >/dev/null 2>&1; then
-    echo "[fol_smoke] shellcheck scripts/fol_docker.inc.sh scripts/fol_smoke.sh run_*.sh"
-    shellcheck scripts/fol_docker.inc.sh scripts/fol_smoke.sh run_*.sh
+    echo "[fol_smoke] shellcheck scripts/fol_docker.inc.sh scripts/fol_smoke.sh scripts/sweeps/run_*.sh"
+    shellcheck scripts/fol_docker.inc.sh scripts/fol_smoke.sh scripts/sweeps/run_*.sh
   elif [[ "${FOL_REQUIRE_SHELLCHECK:-}" == "1" ]]; then
     echo "[fol_smoke] error: shellcheck not in PATH but FOL_REQUIRE_SHELLCHECK=1" >&2
     exit 1

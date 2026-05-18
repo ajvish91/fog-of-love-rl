@@ -51,13 +51,13 @@ For `vanilla_global`, YAML may use **`reg_idx_1` / `reg_idx_2`** or **`aff_slot_
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `FOL_DOCKER_VOLUME` | (see script) | Host directory mounted as `/app` |
+| `FOL_DOCKER_VOLUME` | Repository root (see `scripts/fol_docker.inc.sh`) | Host directory mounted as `/app` |
 | `FOL_DOCKER_IMAGE` | `python:3.12` | Image passed to `docker run` |
 | `FOL_DOCKER_OPTIONS` | `--gpus all` | Extra `docker run` arguments; set to empty string for CPU-only |
 
-**ShellCheck.** GitHub Actions runs **ShellCheck** (and `bash -n`) on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `run_*.sh`. For each `run_*.sh`, keep this immediately above the `source` line so ShellCheck resolves the helper:
+**ShellCheck.** CI runs **ShellCheck** (and `bash -n`) on `scripts/fol_docker.inc.sh`, `scripts/fol_smoke.sh`, and `scripts/sweeps/run_*.sh`. Each sweep script uses:
 
-`# shellcheck source=scripts/fol_docker.inc.sh`
+`# shellcheck source=../fol_docker.inc.sh`
 
 ## Smoke tests (`scripts/fol_smoke.sh`, `scripts/smoke_training.py`)
 
@@ -129,6 +129,6 @@ When not in `debug` mode, runs may log to one of:
 
 Exact project choice is implemented in `fol_training/run_fol.py` (`Run` / `FolTrainingConfig`).
 
-## Artifact: `pareto_history.json`
+## Analysis artifacts (not in Git)
 
-Rich test-step logs (actions / observations per episode) are only emitted for the **`arg_main`** path when not in debug, as in the unified driver. Export or reconstruct `pareto_history.json` from W&B or local logs if your analysis notebook expects that filename; the schema is whatever your download script produced historically.
+Rich test-step logs (actions / observations per episode) are emitted for **`arg_main`** when not in debug. Export from W&B if needed, then place files under **`archive/artifacts/`** (see `archive/artifacts/README.md`). Use **`archive/notebooks/get_history.ipynb`** to inspect exports; paths like `pareto_history.json` and `player_*_*.pkl` are gitignored.
